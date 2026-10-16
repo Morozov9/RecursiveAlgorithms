@@ -66,77 +66,87 @@
             <Canvas Name="FractalCanvas"/>
         </Border>
 
-        <!-- Controls -->
-        <Border Grid.Row="2" Background="#181825" Padding="14,10">
-            <Grid ColumnDefinitions="Auto,Auto,Auto,*,Auto,Auto,Auto,Auto">
+        <!-- Controls: 2 rows — buttons on top, status below -->
+        <Border Grid.Row="2" Background="#181825" Padding="14,8">
+            <StackPanel Spacing="6">
 
-                <!-- Depth -->
-                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                    <TextBlock Text="Глубина:" Classes="label"/>
-                    <NumericUpDown Name="DepthSpinner"
-                                   Minimum="1" Maximum="14" Value="8"
-                                   Width="140" FontSize="14"
-                                   Foreground="#CDD6F4" Background="#313244"/>
-                </StackPanel>
+                <!-- Row 1: Spinners + Buttons -->
+                <Grid ColumnDefinitions="Auto,Auto,Auto,*,Auto,Auto,Auto,Auto">
 
-                <Border Grid.Column="1" Width="1" Background="#313244" Margin="12,0"/>
+                    <!-- Depth -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <TextBlock Text="Глубина:" Classes="label"/>
+                        <NumericUpDown Name="DepthSpinner"
+                                       Minimum="1" Maximum="14" Value="8"
+                                       Width="140" FontSize="14"
+                                       Foreground="#CDD6F4" Background="#313244"/>
+                    </StackPanel>
 
-                <!-- Delay -->
-                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                    <TextBlock Text="Задержка (мс):" Classes="label"/>
-                    <NumericUpDown Name="DelaySpinner"
-                                   Minimum="0" Maximum="500" Value="40"
-                                   Width="140" FontSize="14"
-                                   Foreground="#CDD6F4" Background="#313244"/>
-                </StackPanel>
+                    <Border Grid.Column="1" Width="1" Background="#313244" Margin="12,0"/>
 
-                <!-- Status + hint -->
-                <StackPanel Grid.Column="3" VerticalAlignment="Center"
-                            HorizontalAlignment="Center" Spacing="3">
-                    <TextBlock Name="StatusLabel" Text="Готово к запуску"
+                    <!-- Delay -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <TextBlock Text="Задержка (мс):" Classes="label"/>
+                        <NumericUpDown Name="DelaySpinner"
+                                       Minimum="0" Maximum="500" Value="40"
+                                       Width="140" FontSize="14"
+                                       Foreground="#CDD6F4" Background="#313244"/>
+                    </StackPanel>
+
+                    <!-- Spacer -->
+                    <Border Grid.Column="3"/>
+
+                    <!-- Reset view -->
+                    <Button Grid.Column="4"
+                            Classes="action-btn"
+                            Content="⌂  Сброс вида"
+                            Click="OnResetViewClick"
+                            Background="#45475A"
+                            Foreground="#CDD6F4"
+                            Margin="0,0,8,0"/>
+
+                    <!-- Start -->
+                    <Button Grid.Column="5" Name="StartButton"
+                            Classes="action-btn"
+                            Content="▶  Запустить"
+                            Click="OnStartClick"
+                            Background="#A6E3A1"
+                            Foreground="#1E1E2E"
+                            Margin="0,0,8,0"/>
+
+                    <!-- Stop -->
+                    <Button Grid.Column="6" Name="StopButton"
+                            Classes="action-btn"
+                            Content="⏹  Стоп"
+                            Click="OnStopClick"
+                            Background="#F38BA8"
+                            Foreground="#1E1E2E"
+                            IsEnabled="False"
+                            Margin="0,0,8,0"/>
+
+                    <!-- Clear -->
+                    <Button Grid.Column="7" Name="ClearButton"
+                            Classes="action-btn"
+                            Content="🗑  Очистить"
+                            Click="OnClearClick"
+                            Background="#313244"
+                            Foreground="#CDD6F4"/>
+                </Grid>
+
+                <!-- Row 2: Status + hint (full width, no overlap) -->
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Name="StatusLabel"
+                               Grid.Column="0"
+                               Text="Готово к запуску"
                                FontSize="13" Foreground="#6C7086"
-                               HorizontalAlignment="Center"/>
-                    <TextBlock Text="🖱  Колесо — зум  ·  ЛКМ-тащи — перемещение"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="1"
+                               Text="🖱  Колесо — зум  ·  ЛКМ-тащи — перемещение"
                                FontSize="11" Foreground="#45475A"
-                               HorizontalAlignment="Center"/>
-                </StackPanel>
+                               VerticalAlignment="Center"/>
+                </Grid>
 
-                <!-- Reset view -->
-                <Button Grid.Column="4"
-                        Classes="action-btn"
-                        Content="⌂  Сброс вида"
-                        Click="OnResetViewClick"
-                        Background="#45475A"
-                        Foreground="#CDD6F4"
-                        Margin="0,0,8,0"/>
-
-                <!-- Start -->
-                <Button Grid.Column="5" Name="StartButton"
-                        Classes="action-btn"
-                        Content="▶  Запустить"
-                        Click="OnStartClick"
-                        Background="#A6E3A1"
-                        Foreground="#1E1E2E"
-                        Margin="0,0,8,0"/>
-
-                <!-- Stop -->
-                <Button Grid.Column="6" Name="StopButton"
-                        Classes="action-btn"
-                        Content="⏹  Стоп"
-                        Click="OnStopClick"
-                        Background="#F38BA8"
-                        Foreground="#1E1E2E"
-                        IsEnabled="False"
-                        Margin="0,0,8,0"/>
-
-                <!-- Clear -->
-                <Button Grid.Column="7" Name="ClearButton"
-                        Classes="action-btn"
-                        Content="🗑  Очистить"
-                        Click="OnClearClick"
-                        Background="#313244"
-                        Foreground="#CDD6F4"/>
-            </Grid>
+            </StackPanel>
         </Border>
     </Grid>
 </Window>
