@@ -1,0 +1,105 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="RecursiveAlgorithms.MainWindow"
+        Title="Рекурсивные алгоритмы"
+        Width="600" Height="500"
+        WindowStartupLocation="CenterScreen"
+        CanResize="False"
+        Background="#1E1E2E">
+
+    <Window.Styles>
+        <Style Selector="Button.menu-btn">
+            <Setter Property="Width" Value="360"/>
+            <Setter Property="Height" Value="64"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="Button.menu-btn:pointerover /template/ ContentPresenter">
+            <Setter Property="Opacity" Value="0.85"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,40,0,10" HorizontalAlignment="Center">
+            <TextBlock Text="⟳"
+                       FontSize="52"
+                       HorizontalAlignment="Center"
+                       Foreground="#CBA6F7"/>
+            <TextBlock Text="Рекурсивные алгоритмы"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Foreground="#CDD6F4"
+                       Margin="0,8,0,4"/>
+            <TextBlock Text="Выберите задание"
+                       FontSize="14"
+                       HorizontalAlignment="Center"
+                       Foreground="#6C7086"/>
+        </StackPanel>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Spacing="18">
+
+            <!-- Fractal Button -->
+            <Button Name="FractalButton"
+                    Classes="menu-btn"
+                    Click="OnFractalClick"
+                    Background="#313244"
+                    Foreground="#CDD6F4"
+                    BorderThickness="0">
+                <StackPanel Orientation="Horizontal" Spacing="14" VerticalAlignment="Center">
+                    <TextBlock Text="🌲" FontSize="26" VerticalAlignment="Center"/>
+                    <TextBlock Text="Отрисовка фрактала" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+
+            <!-- Hanoi Button -->
+            <Button Name="HanoiButton"
+                    Classes="menu-btn"
+                    Click="OnHanoiClick"
+                    Background="#313244"
+                    Foreground="#CDD6F4"
+                    BorderThickness="0">
+                <StackPanel Orientation="Horizontal" Spacing="14" VerticalAlignment="Center">
+                    <TextBlock Text="🗼" FontSize="26" VerticalAlignment="Center"/>
+                    <TextBlock Text="Ханойские башни" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+
+            <!-- Recursive Algorithms Button (placeholder) -->
+            <Button Name="RecursiveButton"
+                    Classes="menu-btn"
+                    Click="OnRecursiveClick"
+                    Background="#181825"
+                    Foreground="#585B70"
+                    BorderThickness="1"
+                    BorderBrush="#313244">
+                <StackPanel Orientation="Horizontal" Spacing="14" VerticalAlignment="Center">
+                    <TextBlock Text="⚙️" FontSize="26" VerticalAlignment="Center"/>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Рекурсивные алгоритмы" FontSize="20" FontWeight="SemiBold"/>
+                        <TextBlock Text="— скоро —" FontSize="12" Foreground="#45475A" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+            </Button>
+
+        </StackPanel>
+
+        <!-- Footer -->
+        <TextBlock Grid.Row="2"
+                   Text="RecursiveAlgorithms · C# + Avalonia UI"
+                   FontSize="12"
+                   Foreground="#45475A"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,16"/>
+    </Grid>
+</Window>

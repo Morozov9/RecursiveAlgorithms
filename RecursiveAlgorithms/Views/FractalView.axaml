@@ -1,0 +1,142 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="RecursiveAlgorithms.Views.FractalView"
+        Title="Дерево Пифагора — Фракталы"
+        Width="1000" Height="750"
+        MinWidth="800" MinHeight="600"
+        WindowStartupLocation="CenterScreen"
+        Background="#1E1E2E">
+
+    <Window.Styles>
+        <Style Selector="Button.action-btn">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="14,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="TextBlock.label">
+            <Setter Property="Foreground" Value="#A6ADC8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Title Header -->
+        <Border Grid.Row="0" Background="#181825" Padding="20,14">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Grid.Column="0" Spacing="2">
+                    <TextBlock Text="🌲  Дерево Пифагора"
+                               FontSize="24" FontWeight="Bold"
+                               Foreground="#CBA6F7"/>
+                    <TextBlock Text="Рекурсивный фрактал — визуализация в реальном времени"
+                               FontSize="12" Foreground="#6C7086"/>
+                </StackPanel>
+
+                <!-- Timer -->
+                <Border Grid.Column="1" Background="#313244" CornerRadius="10"
+                        Padding="16,8" VerticalAlignment="Center">
+                    <StackPanel Spacing="2" HorizontalAlignment="Center">
+                        <TextBlock Text="⏱  Время отрисовки" FontSize="11"
+                                   Foreground="#6C7086" HorizontalAlignment="Center"/>
+                        <TextBlock Name="TimerLabel" Text="00:00.000"
+                                   FontSize="22" FontWeight="Bold"
+                                   FontFamily="Consolas,Courier New,monospace"
+                                   Foreground="#A6E3A1" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Canvas: pan/zoom поддержка -->
+        <Border Grid.Row="1"
+                Name="CanvasContainer"
+                Background="#11111B"
+                Margin="10,8"
+                ClipToBounds="True"
+                PointerWheelChanged="OnCanvasWheel"
+                PointerPressed="OnCanvasPanStart"
+                PointerMoved="OnCanvasPan"
+                PointerReleased="OnCanvasPanEnd">
+            <Canvas Name="FractalCanvas"/>
+        </Border>
+
+        <!-- Controls -->
+        <Border Grid.Row="2" Background="#181825" Padding="14,10">
+            <Grid ColumnDefinitions="Auto,Auto,Auto,*,Auto,Auto,Auto,Auto">
+
+                <!-- Depth -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <TextBlock Text="Глубина:" Classes="label"/>
+                    <NumericUpDown Name="DepthSpinner"
+                                   Minimum="1" Maximum="14" Value="8"
+                                   Width="140" FontSize="14"
+                                   Foreground="#CDD6F4" Background="#313244"/>
+                </StackPanel>
+
+                <Border Grid.Column="1" Width="1" Background="#313244" Margin="12,0"/>
+
+                <!-- Delay -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <TextBlock Text="Задержка (мс):" Classes="label"/>
+                    <NumericUpDown Name="DelaySpinner"
+                                   Minimum="0" Maximum="500" Value="40"
+                                   Width="140" FontSize="14"
+                                   Foreground="#CDD6F4" Background="#313244"/>
+                </StackPanel>
+
+                <!-- Status + hint -->
+                <StackPanel Grid.Column="3" VerticalAlignment="Center"
+                            HorizontalAlignment="Center" Spacing="3">
+                    <TextBlock Name="StatusLabel" Text="Готово к запуску"
+                               FontSize="13" Foreground="#6C7086"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="🖱  Колесо — зум  ·  ЛКМ-тащи — перемещение"
+                               FontSize="11" Foreground="#45475A"
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Reset view -->
+                <Button Grid.Column="4"
+                        Classes="action-btn"
+                        Content="⌂  Сброс вида"
+                        Click="OnResetViewClick"
+                        Background="#45475A"
+                        Foreground="#CDD6F4"
+                        Margin="0,0,8,0"/>
+
+                <!-- Start -->
+                <Button Grid.Column="5" Name="StartButton"
+                        Classes="action-btn"
+                        Content="▶  Запустить"
+                        Click="OnStartClick"
+                        Background="#A6E3A1"
+                        Foreground="#1E1E2E"
+                        Margin="0,0,8,0"/>
+
+                <!-- Stop -->
+                <Button Grid.Column="6" Name="StopButton"
+                        Classes="action-btn"
+                        Content="⏹  Стоп"
+                        Click="OnStopClick"
+                        Background="#F38BA8"
+                        Foreground="#1E1E2E"
+                        IsEnabled="False"
+                        Margin="0,0,8,0"/>
+
+                <!-- Clear -->
+                <Button Grid.Column="7" Name="ClearButton"
+                        Classes="action-btn"
+                        Content="🗑  Очистить"
+                        Click="OnClearClick"
+                        Background="#313244"
+                        Foreground="#CDD6F4"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

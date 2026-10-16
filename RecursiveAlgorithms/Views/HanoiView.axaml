@@ -1,0 +1,125 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="RecursiveAlgorithms.Views.HanoiView"
+        Title="Ханойские башни"
+        Width="1100" Height="700"
+        MinWidth="900" MinHeight="580"
+        WindowStartupLocation="CenterScreen"
+        Background="#1E1E2E">
+
+    <Window.Styles>
+        <Style Selector="Button.action-btn">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="TextBlock.label">
+            <Setter Property="Foreground" Value="#A6ADC8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#181825" Padding="20,14">
+            <Grid ColumnDefinitions="*,Auto,Auto">
+
+                <StackPanel Grid.Column="0" Spacing="2">
+                    <TextBlock Text="🗼  Ханойские башни"
+                               FontSize="24" FontWeight="Bold"
+                               Foreground="#89DCEB"/>
+                    <TextBlock Text="Рекурсивное решение головоломки с графической анимацией"
+                               FontSize="12" Foreground="#6C7086"/>
+                </StackPanel>
+
+                <!-- Move counter -->
+                <Border Grid.Column="1" Background="#313244" CornerRadius="10"
+                        Padding="16,8" Margin="0,0,12,0" VerticalAlignment="Center">
+                    <StackPanel Spacing="2" HorizontalAlignment="Center">
+                        <TextBlock Text="Ход" FontSize="11" Foreground="#6C7086" HorizontalAlignment="Center"/>
+                        <TextBlock Name="MoveCounterLabel" Text="0 / 0"
+                                   FontSize="20" FontWeight="Bold"
+                                   FontFamily="Consolas,Courier New,monospace"
+                                   Foreground="#89DCEB" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Status -->
+                <Border Grid.Column="2" Background="#313244" CornerRadius="10"
+                        Padding="16,8" VerticalAlignment="Center">
+                    <StackPanel Spacing="2" HorizontalAlignment="Center">
+                        <TextBlock Text="Статус" FontSize="11" Foreground="#6C7086" HorizontalAlignment="Center"/>
+                        <TextBlock Name="StatusLabel" Text="Ожидание"
+                                   FontSize="14" FontWeight="SemiBold"
+                                   Foreground="#A6ADC8" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Canvas -->
+        <Border Grid.Row="1" Background="#11111B" Margin="10,8">
+            <Canvas Name="HanoiCanvas" ClipToBounds="True"/>
+        </Border>
+
+        <!-- Controls -->
+        <Border Grid.Row="2" Background="#181825" Padding="16,12">
+            <Grid ColumnDefinitions="Auto,Auto,Auto,*,Auto,Auto">
+
+                <!-- Disk count -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <TextBlock Text="Колец:" Classes="label"/>
+                    <NumericUpDown Name="DiskCountSpinner"
+                                   Minimum="1" Maximum="10" Value="5"
+                                   Width="130" FontSize="14"
+                                   Foreground="#CDD6F4" Background="#313244"/>
+                </StackPanel>
+
+                <Border Grid.Column="1" Width="1" Background="#313244" Margin="14,0"/>
+
+                <!-- Speed -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <TextBlock Text="Задержка (мс):" Classes="label"/>
+                    <NumericUpDown Name="SpeedSpinner"
+                                   Minimum="100" Maximum="3000" Value="600"
+                                   Width="130" FontSize="14"
+                                   Foreground="#CDD6F4" Background="#313244"/>
+                </StackPanel>
+
+                <!-- Move description -->
+                <TextBlock Grid.Column="3"
+                           Name="MoveDescLabel" Text=""
+                           FontSize="13" Foreground="#6C7086"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           TextWrapping="Wrap"/>
+
+                <!-- Start -->
+                <Button Grid.Column="4" Name="StartButton"
+                        Classes="action-btn"
+                        Content="▶  Запустить"
+                        Click="OnStartClick"
+                        Background="#89DCEB"
+                        Foreground="#1E1E2E"
+                        Margin="0,0,8,0"/>
+
+                <!-- Stop -->
+                <Button Grid.Column="5" Name="StopButton"
+                        Classes="action-btn"
+                        Content="⏹  Стоп"
+                        Click="OnStopClick"
+                        Background="#F38BA8"
+                        Foreground="#1E1E2E"
+                        IsEnabled="False"/>
+            </Grid>
+        </Border>
+
+    </Grid>
+</Window>
