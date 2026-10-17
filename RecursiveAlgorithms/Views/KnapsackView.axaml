@@ -1,0 +1,231 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="RecursiveAlgorithms.Views.KnapsackView"
+        Title="Задача о рюкзаке (0/1)"
+        Width="1200" Height="800"
+        MinWidth="1000" MinHeight="700"
+        WindowStartupLocation="CenterScreen"
+        Background="#1E1E2E">
+
+    <Window.Styles>
+        <Style Selector="Button.action-btn">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="TextBlock.label">
+            <Setter Property="Foreground" Value="#A6ADC8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="TextBlock.legend">
+            <Setter Property="Foreground" Value="#A6ADC8"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#181825" Padding="20,14">
+            <Grid ColumnDefinitions="*,Auto,Auto">
+
+                <StackPanel Grid.Column="0" Spacing="2">
+                    <TextBlock Text="🎒  Задача о рюкзаке (0/1)"
+                               FontSize="24" FontWeight="Bold"
+                               Foreground="#F9E2AF"/>
+                    <TextBlock Text="Рекурсивный перебор с возвратом — оптимальный набор предметов"
+                               FontSize="12" Foreground="#6C7086"/>
+                </StackPanel>
+
+                <!-- Timer -->
+                <Border Grid.Column="1" Background="#313244" CornerRadius="10"
+                        Padding="16,8" Margin="0,0,12,0" VerticalAlignment="Center">
+                    <StackPanel Spacing="2" HorizontalAlignment="Center">
+                        <TextBlock Text="⏱  Время"
+                                   FontSize="11" Foreground="#6C7086" HorizontalAlignment="Center"/>
+                        <TextBlock Name="TimerLabel" Text="0.000 мс"
+                                   FontSize="20" FontWeight="Bold"
+                                   FontFamily="Consolas,Courier New,monospace"
+                                   Foreground="#A6E3A1" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Status -->
+                <Border Grid.Column="2" Background="#313244" CornerRadius="10"
+                        Padding="16,8" VerticalAlignment="Center">
+                    <StackPanel Spacing="2" HorizontalAlignment="Center">
+                        <TextBlock Text="Статус" FontSize="11" Foreground="#6C7086" HorizontalAlignment="Center"/>
+                        <TextBlock Name="StatusLabel" Text="Ожидание"
+                                   FontSize="14" FontWeight="SemiBold"
+                                   Foreground="#A6ADC8" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Content -->
+        <Grid Grid.Row="1" ColumnDefinitions="2*,3*" Margin="10,8">
+
+            <!-- Left: Items + parameters -->
+            <Border Grid.Column="0" Background="#181825" Padding="16" Margin="0,0,5,0">
+                <Grid RowDefinitions="Auto,*">
+
+                    <TextBlock Grid.Row="0" Text="Параметры задачи"
+                               FontSize="16" FontWeight="Bold"
+                               Foreground="#CDD6F4" Margin="0,0,0,12"/>
+
+                    <ScrollViewer Grid.Row="1">
+                        <StackPanel Spacing="8">
+
+                            <!-- Items count -->
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="Количество предметов:" Classes="label" Width="200"/>
+                                <NumericUpDown Name="ItemsCountSpinner"
+                                               Minimum="1" Maximum="20" Value="8"
+                                               Width="120" FontSize="14"
+                                               Foreground="#CDD6F4" Background="#313244"/>
+                            </StackPanel>
+
+                            <!-- Capacity -->
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="Вместимость рюкзака:" Classes="label" Width="200"/>
+                                <NumericUpDown Name="CapacitySpinner"
+                                               Minimum="1" Maximum="100" Value="30"
+                                               Width="120" FontSize="14"
+                                               Foreground="#CDD6F4" Background="#313244"/>
+                            </StackPanel>
+
+                            <!-- Generate button -->
+                            <Button Name="GenerateButton"
+                                    Classes="action-btn"
+                                    Content="🎲  Сгенерировать предметы"
+                                    Click="OnGenerateClick"
+                                    Background="#CBA6F7"
+                                    Foreground="#1E1E2E"
+                                    HorizontalAlignment="Stretch"
+                                    Margin="0,8,0,0"/>
+
+                            <!-- Items list -->
+                            <TextBlock Text="Предметы (вес / ценность):"
+                                       FontSize="14" FontWeight="SemiBold"
+                                       Foreground="#CDD6F4" Margin="0,12,0,4"/>
+                            <Border Background="#11111B" CornerRadius="8" Padding="8" MinHeight="150">
+                                <ScrollViewer>
+                                    <StackPanel Name="ItemsPanel" Spacing="4"/>
+                                </ScrollViewer>
+                            </Border>
+
+                            <!-- Result -->
+                            <TextBlock Text="Оптимальное решение:"
+                                       FontSize="14" FontWeight="SemiBold"
+                                       Foreground="#CDD6F4" Margin="0,12,0,4"/>
+                            <Border Background="#11111B" CornerRadius="8" Padding="12" MinHeight="80">
+                                <StackPanel Name="ResultPanel" Spacing="6"/>
+                            </Border>
+
+                        </StackPanel>
+                    </ScrollViewer>
+
+                </Grid>
+            </Border>
+
+            <!-- Right: recursion tree -->
+            <Border Grid.Column="1" Background="#11111B" Padding="16" Margin="5,0,0,0">
+                <Grid RowDefinitions="Auto,Auto,Auto,*">
+
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+                        <TextBlock Grid.Column="0" Text="Дерево рекурсии"
+                                   FontSize="16" FontWeight="Bold"
+                                   Foreground="#CDD6F4" VerticalAlignment="Center"/>
+
+                        <TextBlock Grid.Column="1" Name="TreeInfoLabel"
+                                   Classes="legend"
+                                   Text=""/>
+                    </Grid>
+
+                    <!-- Legend -->
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="14" Margin="0,0,0,10">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <Border Width="14" Height="14" CornerRadius="4" Background="#A6E3A1" VerticalAlignment="Center"/>
+                            <TextBlock Text="путь оптимального решения" Classes="legend"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <Border Width="14" Height="14" CornerRadius="4" Background="#313244" VerticalAlignment="Center"/>
+                            <TextBlock Text="другие варианты" Classes="legend"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <Border Width="14" Height="14" CornerRadius="4" BorderBrush="#F38BA8"
+                                    BorderThickness="1" VerticalAlignment="Center"/>
+                            <TextBlock Text="не помещается" Classes="legend"/>
+                        </StackPanel>
+                        <TextBlock Text="↙ взять   ↘ пропустить" Classes="legend"/>
+                    </StackPanel>
+
+                    <!-- View controls -->
+                    <Grid Grid.Row="2" ColumnDefinitions="Auto,Auto,*" Margin="0,0,0,8">
+                        <Button Grid.Column="0" Content="⌂  Сброс вида" Click="OnResetViewClick"
+                                Classes="action-btn" Padding="12,0" Margin="0,0,8,0"
+                                Background="#45475A" Foreground="#CDD6F4"/>
+                        <Button Grid.Column="1" Content="⤢  Показать все" Click="OnFitViewClick"
+                                Classes="action-btn" Padding="12,0"
+                                Background="#CBA6F7" Foreground="#1E1E2E"/>
+                        <TextBlock Grid.Column="2" Text="🖱  Колесо — зум  ·  ЛКМ — перемещение"
+                                   Classes="legend" HorizontalAlignment="Right"/>
+                    </Grid>
+
+                    <!-- Поле дерева: перемещение мышью и зум колесом -->
+                    <Border Grid.Row="3"
+                            Name="TreeContainer"
+                            Background="#0E0E17"
+                            CornerRadius="8"
+                            ClipToBounds="True"
+                            PointerWheelChanged="OnTreeWheel"
+                            PointerPressed="OnTreePanStart"
+                            PointerMoved="OnTreePan"
+                            PointerReleased="OnTreePanEnd">
+                        <Canvas Name="TreeCanvas" RenderTransformOrigin="0,0"/>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Controls -->
+        <Border Grid.Row="2" Background="#181825" Padding="16,12">
+            <Grid ColumnDefinitions="*,Auto,Auto">
+
+                <TextBlock Grid.Column="0"
+                           Name="ResultStatusLabel"
+                           Text="Нажмите «Сгенерировать» для начала"
+                           FontSize="13" Foreground="#6C7086"
+                           VerticalAlignment="Center"/>
+
+                <!-- Solve -->
+                <Button Grid.Column="1" Name="SolveButton"
+                        Classes="action-btn"
+                        Content="▶  Решить"
+                        Click="OnSolveClick"
+                        Background="#A6E3A1"
+                        Foreground="#1E1E2E"
+                        Margin="0,0,8,0"
+                        IsEnabled="False"/>
+
+                <!-- Clear -->
+                <Button Grid.Column="2" Name="ClearButton"
+                        Classes="action-btn"
+                        Content="🗑  Очистить"
+                        Click="OnClearClick"
+                        Background="#313244"
+                        Foreground="#CDD6F4"/>
+
+            </Grid>
+        </Border>
+
+    </Grid>
+</Window>
