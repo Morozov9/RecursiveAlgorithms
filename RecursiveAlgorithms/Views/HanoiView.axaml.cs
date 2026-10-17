@@ -13,10 +13,10 @@ namespace RecursiveAlgorithms.Views;
 public partial class HanoiView : Window
 {
     // ── Visual constants ────────────────────────────────────────────────────
-    private const double PegWidth     = 10;
-    private const double BaseHeight   = 18;
-    private const double BaseWidth    = 200;
-    private const double DiskHeight   = 28;
+    private const double PegWidth = 10;
+    private const double BaseHeight = 18;
+    private const double BaseWidth = 200;
+    private const double DiskHeight = 28;
     private const double MinDiskWidth = 44;
 
     private static readonly Color[] DiskColors =
@@ -38,7 +38,7 @@ public partial class HanoiView : Window
     private double _canvasWidth;
     private double _canvasHeight;
     private double _maxDiskWidth;
-    private double _groundY;      // Y of the ground line (stored for animation)
+    private double _groundY;
 
     private readonly Stack<int>[] _pegs = [new(), new(), new()];
     private Rectangle[] _diskRects = [];
@@ -70,18 +70,18 @@ public partial class HanoiView : Window
         HanoiCanvas.Children.Clear();
         foreach (var p in _pegs) p.Clear();
 
-        _diskCount    = (int)(DiskCountSpinner.Value ?? 5);
-        _canvasWidth  = HanoiCanvas.Bounds.Width;
+        _diskCount = (int)(DiskCountSpinner.Value ?? 5);
+        _canvasWidth = HanoiCanvas.Bounds.Width;
         _canvasHeight = HanoiCanvas.Bounds.Height;
         _maxDiskWidth = (_canvasWidth / 3.0) * 0.85;
-        _groundY      = _canvasHeight - 20;
+        _groundY = _canvasHeight - 20;
 
-        _totalMoves   = (1 << _diskCount) - 1;
-        _currentMove  = 0;
+        _totalMoves = (1 << _diskCount) - 1;
+        _currentMove = 0;
 
         MoveCounterLabel.Text = $"0 / {_totalMoves}";
-        StatusLabel.Text      = "Ожидание";
-        MoveDescLabel.Text    = "";
+        StatusLabel.Text = "Ожидание";
+        MoveDescLabel.Text = "";
 
         double zone = _canvasWidth / 3.0;
         _pegCenters = [zone * 0.5, zone * 1.5, zone * 2.5];
@@ -93,9 +93,11 @@ public partial class HanoiView : Window
         {
             var baseRect = new Rectangle
             {
-                Width = BaseWidth, Height = BaseHeight,
+                Width = BaseWidth,
+                Height = BaseHeight,
                 Fill = new SolidColorBrush(Color.FromRgb(88, 91, 112)),
-                RadiusX = 4, RadiusY = 4
+                RadiusX = 4,
+                RadiusY = 4
             };
             Canvas.SetLeft(baseRect, _pegCenters[i] - BaseWidth / 2);
             Canvas.SetTop(baseRect, _groundY - BaseHeight + 2);
@@ -103,9 +105,11 @@ public partial class HanoiView : Window
 
             var pole = new Rectangle
             {
-                Width = PegWidth, Height = pegHeight,
+                Width = PegWidth,
+                Height = pegHeight,
                 Fill = new SolidColorBrush(Color.FromRgb(108, 112, 134)),
-                RadiusX = 3, RadiusY = 3
+                RadiusX = 3,
+                RadiusY = 3
             };
             Canvas.SetLeft(pole, _pegCenters[i] - PegWidth / 2);
             Canvas.SetTop(pole, _groundY - BaseHeight - pegHeight + 2);
@@ -114,7 +118,8 @@ public partial class HanoiView : Window
             var label = new TextBlock
             {
                 Text = ((char)('A' + i)).ToString(),
-                FontSize = 18, FontWeight = FontWeight.Bold,
+                FontSize = 18,
+                FontWeight = FontWeight.Bold,
                 Foreground = new SolidColorBrush(Color.FromRgb(108, 112, 134))
             };
             Canvas.SetLeft(label, _pegCenters[i] - 9);
@@ -126,15 +131,17 @@ public partial class HanoiView : Window
         _diskRects = new Rectangle[_diskCount + 1];
         double step = (_maxDiskWidth - MinDiskWidth) / Math.Max(_diskCount - 1, 1);
 
-        for (int d = 1; d <= _diskCount; d++)
+        // ★ ИСПРАВЛЕНИЕ: кладём в стек СНАЧАЛА БОЛЬШОЕ, ПОТОМ МАЛЕНЬКОЕ ★
+        for (int d = _diskCount; d >= 1; d--)
         {
             double dw = MinDiskWidth + (d - 1) * step;
             var rect = new Rectangle
             {
-                Width   = dw,
-                Height  = DiskHeight - 2,
-                Fill    = new SolidColorBrush(DiskColors[(d - 1) % DiskColors.Length]),
-                RadiusX = 7, RadiusY = 7
+                Width = dw,
+                Height = DiskHeight - 2,
+                Fill = new SolidColorBrush(DiskColors[(d - 1) % DiskColors.Length]),
+                RadiusX = 7,
+                RadiusY = 7
             };
             _diskRects[d] = rect;
             HanoiCanvas.Children.Add(rect);
@@ -150,8 +157,8 @@ public partial class HanoiView : Window
     {
         for (int p = 0; p < 3; p++)
         {
-            var arr = _pegs[p].ToArray();
-            Array.Reverse(arr); // bottom-first
+            var arr = _pegs[p].ToArray();   // [top, ..., bottom]
+            Array.Reverse(arr);             // [bottom, ..., top]
             for (int s = 0; s < arr.Length; s++)
                 SnapDisk(arr[s], p, s);
         }
@@ -161,7 +168,7 @@ public partial class HanoiView : Window
     {
         var rect = _diskRects[disk];
         Canvas.SetLeft(rect, _pegCenters[pegIdx] - rect.Width / 2);
-        Canvas.SetTop(rect,  _groundY - BaseHeight - (stackPos + 1) * DiskHeight);
+        Canvas.SetTop(rect, _groundY - BaseHeight - (stackPos + 1) * DiskHeight);
         rect.ZIndex = stackPos + 1;
     }
 
@@ -228,7 +235,7 @@ public partial class HanoiView : Window
 
                 _currentMove++;
                 MoveCounterLabel.Text = $"{_currentMove} / {_totalMoves}";
-                MoveDescLabel.Text    = $"Диск {disk}: {(char)('A' + from)} → {(char)('A' + to)}";
+                MoveDescLabel.Text = $"Диск {disk}: {(char)('A' + from)} → {(char)('A' + to)}";
 
                 // ★ Smooth 3-phase animation ★
                 await AnimateDiskMove(rect, fromX, fromY, toX, toY, transitY, delayMs, token);
@@ -236,12 +243,12 @@ public partial class HanoiView : Window
                 rect.ZIndex = newStackPos + 1;
             }
 
-            StatusLabel.Text   = "✅ Решено!";
+            StatusLabel.Text = "✅ Решено!";
             MoveDescLabel.Text = $"Всего ходов: {_totalMoves}";
         }
         catch (OperationCanceledException)
         {
-            StatusLabel.Text   = "⏹ Остановлено";
+            StatusLabel.Text = "⏹ Остановлено";
             MoveDescLabel.Text = "";
         }
         catch (Exception ex)
@@ -255,11 +262,6 @@ public partial class HanoiView : Window
     }
 
     // ── 3-Phase smooth disk animation ────────────────────────────────────────
-    //
-    //  Phase 1 (30%): Lift disk straight UP to transitY
-    //  Phase 2 (40%): Slide HORIZONTALLY over target peg
-    //  Phase 3 (30%): Lower disk straight DOWN to final position
-    //
     private static async Task AnimateDiskMove(
         Rectangle disk,
         double fromX, double fromY,
@@ -268,16 +270,14 @@ public partial class HanoiView : Window
         int totalDelayMs,
         CancellationToken token)
     {
-        // Divide delay: 30 / 40 / 30 %
         int ms1 = (int)(totalDelayMs * 0.30);
         int ms2 = (int)(totalDelayMs * 0.40);
         int ms3 = totalDelayMs - ms1 - ms2;
 
-        await AnimateSegment(disk, fromX, fromY, fromX,   transitY, ms1, token); // up
-        await AnimateSegment(disk, fromX, transitY, toX,  transitY, ms2, token); // across
-        await AnimateSegment(disk, toX,  transitY, toX,   toY,      ms3, token); // down
+        await AnimateSegment(disk, fromX, fromY, fromX, transitY, ms1, token); // up
+        await AnimateSegment(disk, fromX, transitY, toX, transitY, ms2, token); // across
+        await AnimateSegment(disk, toX, transitY, toX, toY, ms3, token); // down
 
-        // Guarantee exact final position
         Canvas.SetLeft(disk, toX);
         Canvas.SetTop(disk, toY);
     }
@@ -290,7 +290,7 @@ public partial class HanoiView : Window
         int durationMs,
         CancellationToken token)
     {
-        const int FrameMs = 14; // ~70 fps
+        const int FrameMs = 14;
         int frames = Math.Max(2, durationMs / FrameMs);
         int frameDelay = Math.Max(1, durationMs / frames);
 
@@ -299,7 +299,7 @@ public partial class HanoiView : Window
             token.ThrowIfCancellationRequested();
             double t = EaseInOut((double)i / frames);
             Canvas.SetLeft(disk, Lerp(x1, x2, t));
-            Canvas.SetTop(disk,  Lerp(y1, y2, t));
+            Canvas.SetTop(disk, Lerp(y1, y2, t));
             await Task.Delay(frameDelay, token);
         }
     }
@@ -307,20 +307,29 @@ public partial class HanoiView : Window
     // ── Math helpers ─────────────────────────────────────────────────────────
     private static double Lerp(double a, double b, double t) => a + (b - a) * t;
 
-    // Smooth ease-in-out (quadratic)
     private static double EaseInOut(double t) =>
         t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 
     // ── Stop ─────────────────────────────────────────────────────────────────
     private void OnStopClick(object? sender, RoutedEventArgs e) => _cts?.Cancel();
 
+    // ── Reset ────────────────────────────────────────────────────────────────
+    private void OnResetClick(object? sender, RoutedEventArgs e)
+    {
+        _cts?.Cancel();
+        _layoutInitialized = false;
+        InitializePuzzle();
+        SetRunningState(false);
+    }
+
     // ── UI state ─────────────────────────────────────────────────────────────
     private void SetRunningState(bool running)
     {
-        _isRunning                 = running;
-        StartButton.IsEnabled      = !running;
-        StopButton.IsEnabled       =  running;
+        _isRunning = running;
+        StartButton.IsEnabled = !running;
+        StopButton.IsEnabled = running;
+        ResetButton.IsEnabled = !running;
         DiskCountSpinner.IsEnabled = !running;
-        SpeedSpinner.IsEnabled     = !running;
+        SpeedSpinner.IsEnabled = !running;
     }
 }
